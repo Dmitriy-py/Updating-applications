@@ -169,7 +169,7 @@ kubectl describe pod <pod-name> | grep Image:
 ```
 ### Результат подтвердил возврат к образу nginx:1.20.
 
-
+![kubectl describe pod <pod-name> | grep Image](https://github.com/Dmitriy-py/Updating-applications/blob/551b8b9cb7d133ed7df503b34d1f503fe98a6882/kubectl_describe_pod.png)
 
 
 
