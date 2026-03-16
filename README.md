@@ -59,7 +59,6 @@ metadata:
   name: my-app
 spec:
   replicas: 5
-  # Определение стратегии обновления
   strategy:
     type: Recreate
   selector:
@@ -72,7 +71,7 @@ spec:
     spec:
       containers:
       - name: my-app-container
-        image: my-registry/my-app:v2.0.0 # Новая мажорная версия
+        image: my-registry/my-app:v2.0.0
         ports:
         - containerPort: 80
         resources:
@@ -82,7 +81,6 @@ spec:
           limits:
             cpu: "400m"
             memory: "512Mi"
-        # Важно настроить пробы, чтобы сервис начал принимать трафик сразу после готовности
         readinessProbe:
           httpGet:
             path: /healthz
