@@ -172,12 +172,190 @@ kubectl describe pod <pod-name> | grep Image:
 ![kubectl describe pod <pod-name> | grep Image](https://github.com/Dmitriy-py/Updating-applications/blob/551b8b9cb7d133ed7df503b34d1f503fe98a6882/kubectl_describe_pod.png)
 
 
+## Задание 3*. Создать Canary deployment
+   1. Создать два deployment'а приложения nginx.
+   2. При помощи разных ConfigMap сделать две версии приложения — веб-страницы.
+   3. С помощью ingress создать канареечный деплоймент, чтобы можно было часть трафика перебросить на разные версии приложения.
 
 
+## Ответ:
 
+### Описание задачи
+Необходимо создать две версии приложения (nginx) с разными приветственными страницами, используя ConfigMap, и настроить Ingress-контроллер для распределения трафика между ними (Canary-деплоймент).
 
+---
 
+### 1. Манифест версии v1 (Main)
+Файл `v1-main.yaml` содержит ConfigMap с зеленоватым фоном, Deployment и Service.
 
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-v1-config
+data:
+  index.html: |
+    <html>
+    <body style="background-color: #e8f5e9;">
+      <h1>Welcome to Version 1</h1>
+      <p>This is the stable production environment.</p>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-v1
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+      version: v1
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: v1
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: nginx-v1-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-v1-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: nginx
+    version: v1
+```
+
+### 2. Манифест версии v2 (Canary)
+
+Файл v2-canary.yaml содержит `ConfigMap`, `Deployment` и `Service`.
+
+```yaml
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: nginx-v2-config
+data:
+  index.html: |
+    <html>
+    <body style="background-color: #fff3e0;">
+      <h1>Welcome to Version 2 (Canary)</h1>
+      <p>This is the experimental feature version.</p>
+    </body>
+    </html>
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-v2
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: nginx
+      version: v2
+  template:
+    metadata:
+      labels:
+        app: nginx
+        version: v2
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:stable-alpine
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - name: html-volume
+          mountPath: /usr/share/nginx/html
+      volumes:
+      - name: html-volume
+        configMap:
+          name: nginx-v2-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: nginx-v2-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: nginx
+    version: v2
+```
+
+### 3. Манифест Ingress (Canary Logic)
+Файл `ingress-canary.yaml` создает два правила. Второе правило использует аннотации для перехвата 30% трафика.
+
+```yaml
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-main-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - host: my-app.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-v1-service
+            port:
+              number: 80
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: nginx-canary-ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+    nginx.ingress.kubernetes.io/canary: "true"
+    nginx.ingress.kubernetes.io/canary-weight: "30"
+spec:
+  rules:
+  - host: my-app.com
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: nginx-v2-service
+            port:
+              number: 80
+```
+### 4. Проверка работы
+Для проверки был выполнен цикл из 10 запросов к Ingress-контроллеру (NodePort 30489) с указанием Host my-app.com.
+
+### Команда: 
+
+#### `for i in {1..10}; do curl -s -H "Host: my-app.com" http://192.168.1.10:30489; done`
+
+Результат (логи): Распределение трафика составило 70% на стабильную версию (v1) и 30% на новую версию (v2), что соответствует заданному весу.
 
 
 
