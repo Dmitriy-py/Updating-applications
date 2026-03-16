@@ -135,7 +135,7 @@ spec:
         - containerPort: 8080
 ```
 
-![kubectl apply -f deployment.yaml](https://github.com/Dmitriy-py/Updating-applications/blob/7b1531a3b999b6e3916763a70871bd924a70ad90/kubectl%20apply%20.png).
+![kubectl apply -f deployment.yaml](https://github.com/Dmitriy-py/Updating-applications/blob/7b1531a3b999b6e3916763a70871bd924a70ad90/kubectl%20apply%20.png)
 
 ### 2. Обновление до Nginx 1.20
 
