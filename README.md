@@ -155,6 +155,31 @@ kubectl set image deployment/nginx-multitool nginx=nginx:1.28
 ![kubectl set image deployment/nginx-multitool nginx=nginx](https://github.com/Dmitriy-py/Updating-applications/blob/90f50d45aa3cd5466b73c4243ea8a840927ad65a/kubectl_set_image.png)
 
 
+## 4. Откат обновления
+
+Для возврата к стабильной версии был выполнен откат:
+
+```bash
+kubectl rollout undo deployment/nginx-multitool
+```
+Проверка итоговой версии:
+
+```dash
+kubectl describe pod <pod-name> | grep Image:
+```
+### Результат подтвердил возврат к образу nginx:1.20.
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
