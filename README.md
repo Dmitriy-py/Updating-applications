@@ -361,7 +361,7 @@ spec:
 
 ![Проверка работы1](https://github.com/Dmitriy-py/Updating-applications/blob/76e9ddcb572a5202046b0baa41a11cf22975dc27/Checking_operation_1.png)
 
-
+![Проверка работы2](https://github.com/Dmitriy-py/Updating-applications/blob/faea87b3eb105de5f1c79a87bf0d49748402d47f/Checking_operation_2.png)
 
 
 
