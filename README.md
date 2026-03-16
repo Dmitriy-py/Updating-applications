@@ -95,8 +95,53 @@ spec:
 В условиях несовместимости версий и отсутствия свободных ресурсов для запуска параллельных копий приложения, стратегия Recreate является единственным безопасным способом провести обновление, минимизируя риски возникновения логических ошибок в работе приложения за счет кратковременного планового простоя.
 ```
 
+## Задание 2. Обновить приложение
+   1. Создать deployment приложения с контейнерами nginx и multitool. Версию nginx взять 1.19. Количество реплик — 5.
+   2. Обновить версию nginx в приложении до версии 1.20, сократив время обновления до минимума. Приложение должно быть            доступно.
+   3. Попытаться обновить nginx до версии 1.28, приложение должно оставаться доступным.
+   4. Откатиться после неудачного обновления.
+
+## Ответ:
+
+### 1. Создание исходного Deployment
+Был создан манифест с 5 репликами, включающий контейнеры `nginx:1.19` и `network-multitool`.
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nginx-multitool
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: nginx-multitool
+  template:
+    metadata:
+      labels:
+        app: nginx-multitool
+    spec:
+      containers:
+      - name: nginx
+        image: nginx:1.19
+        ports:
+        - containerPort: 80
+      - name: multitool
+        image: wbitt/network-multitool
+        env:
+        - name: HTTP_PORT
+          value: "8080"
+        ports:
+        - containerPort: 8080
+```
 
 
+
+### 2. Обновление до Nginx 1.20
+
+```bash
+kubectl set image deployment/nginx-multitool nginx=nginx:1.20
+```
 
 
 
