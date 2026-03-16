@@ -359,7 +359,7 @@ spec:
 
 Результат (логи): Распределение трафика составило 70% на стабильную версию (v1) и 30% на новую версию (v2), что соответствует заданному весу.
 
-
+![Проверка работы1](https://github.com/Dmitriy-py/Updating-applications/blob/76e9ddcb572a5202046b0baa41a11cf22975dc27/Checking_operation_1.png)
 
 
 
