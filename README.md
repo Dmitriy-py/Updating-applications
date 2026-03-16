@@ -348,6 +348,8 @@ spec:
             port:
               number: 80
 ```
+![запуск манифестов](https://github.com/Dmitriy-py/Updating-applications/blob/618b0d05d5839f365b647ea88cabb943ce8be0f7/launching_manifests.png)
+
 ### 4. Проверка работы
 Для проверки был выполнен цикл из 10 запросов к Ingress-контроллеру (NodePort 30489) с указанием Host my-app.com.
 
