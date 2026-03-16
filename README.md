@@ -152,7 +152,7 @@ kubectl set image deployment/nginx-multitool nginx=nginx:1.28
 ```
 Результат: Часть подов перешла в статус ImagePullBackOff. Однако, так как новые поды не прошли проверку готовности, Kubernetes не удалил все старые работающие поды (версии 1.20), и приложение продолжало отвечать на запросы.
 
-
+![kubectl set image deployment/nginx-multitool nginx=nginx](https://github.com/Dmitriy-py/Updating-applications/blob/90f50d45aa3cd5466b73c4243ea8a840927ad65a/kubectl_set_image.png)
 
 
 
